@@ -67,7 +67,6 @@ export default {
   // and would bill credits or be rejected under the base2-free agent.
   models: [
     { id: "deepseek/deepseek-v4-flash", name: "DeepSeek V4 Flash" },
-    { id: "deepseek/deepseek-v4-pro", name: "DeepSeek V4 Pro" },
     { id: "mimo/mimo-v2.5", name: "MiMo 2.5" },
     { id: "openai/gpt-5.6-luna", name: "GPT-5.6 Luna" },
   ],

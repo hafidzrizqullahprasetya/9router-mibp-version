@@ -105,7 +105,6 @@ function injectEndTurnTool(body) {
 // base2 roots during the transition).
 const FREE_ROOT_AGENT_BY_MODEL = {
   "deepseek/deepseek-v4-flash": "base3-free-deepseek-flash",
-  "deepseek/deepseek-v4-pro": "base3-free-deepseek",
   "mimo/mimo-v2.5": "base3-free-mimo",
   "openai/gpt-5.6-luna": "base3-free-luna",
 };
