@@ -257,7 +257,21 @@ async function fetchWithNetworkRetry(url, options, proxyOptions, attempts = 3, t
   throw lastError;
 }
 
-async function requestSession(token, model, proxyOptions) {
+async function endSession(token, proxyOptions) {
+  try {
+    await fetchWithNetworkRetry(`${sessionOrigin()}${SESSION_PATH}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "User-Agent": "codebuff-cli/0.0.138",
+      },
+    }, proxyOptions, 2);
+  } catch {
+    // Ignore error on session termination
+  }
+}
+
+async function requestSession(token, model, proxyOptions, hasRetriedUnlock = false) {
   const response = await fetchWithNetworkRetry(`${sessionOrigin()}${SESSION_PATH}`, {
     method: "POST",
     headers: {
@@ -277,6 +291,11 @@ async function requestSession(token, model, proxyOptions) {
     throw err;
   }
   if (!response.ok) {
+    if (response.status === 409 && data?.status === "model_locked" && !hasRetriedUnlock) {
+      // Actively end the stale session bound to the previous model and claim fresh
+      await endSession(token, proxyOptions);
+      return requestSession(token, model, proxyOptions, true);
+    }
     const err = new Error(`Freebuff session request failed: ${response.status} ${JSON.stringify(data).slice(0, 200)}`);
     err.status = response.status;
     throw err;
