@@ -36,6 +36,12 @@ function resolveOpencodeSession(body, credentials) {
 // it shows up (clearable) on the Proxy Fitness page.
 const IP_LIMIT_BODY = /limit|rate|quota|exhausted|capacity|too many|retry/i;
 
+function resolveOpencodeModelId(model) {
+  if (model === "ox-alpha-free") return "x-preview-f-free";
+  if (model === "muse-spark" || model === "muse-spark-1.2") return "muse-spark-1.2-contributor-free";
+  return model;
+}
+
 export class OpenCodeExecutor extends BaseExecutor {
   constructor() {
     super("opencode", PROVIDERS.opencode);
@@ -44,12 +50,15 @@ export class OpenCodeExecutor extends BaseExecutor {
 
   transformRequest(model, body, stream, credentials) {
     this._currentSessionId = resolveOpencodeSession(body, credentials);
-    return injectReasoningContent({ provider: this.provider, model, body });
+    const resolvedModel = resolveOpencodeModelId(model);
+    const resolvedBody = { ...body, model: resolvedModel };
+    return injectReasoningContent({ provider: this.provider, model: resolvedModel, body: resolvedBody });
   }
 
   buildUrl(model) {
     const base = this.config.baseUrl;
-    return MESSAGES_MODELS.has(model)
+    const resolvedModel = resolveOpencodeModelId(model);
+    return MESSAGES_MODELS.has(resolvedModel)
       ? `${base}/zen/v1/messages`
       : `${base}/zen/v1/chat/completions`;
   }

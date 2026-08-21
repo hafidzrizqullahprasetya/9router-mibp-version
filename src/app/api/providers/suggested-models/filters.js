@@ -1,5 +1,5 @@
 // Free OpenCode models that don't use the "-free" id suffix
-const KNOWN_FREE_OPENCODE_MODELS = ["big-pickle"];
+const KNOWN_FREE_OPENCODE_MODELS = ["big-pickle", "ox-alpha-free", "muse-spark-1.2", "muse-spark-1.2-contributor-free"];
 
 export const FILTERS = {
   "openrouter-free": (models) =>
