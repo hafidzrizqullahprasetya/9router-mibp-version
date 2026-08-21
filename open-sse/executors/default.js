@@ -158,6 +158,10 @@ export class DefaultExecutor extends BaseExecutor {
       headers["Anthropic-Beta"] = selectAnthropicBeta(model);
     }
 
+    if (this.provider?.startsWith?.("openai-compatible-") && !headers["User-Agent"] && !headers["user-agent"]) {
+      headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36";
+    }
+
     // Strip first-party Claude Code identity headers for non-Anthropic anthropic-compatible upstreams
     if (this.provider?.startsWith?.("anthropic-compatible-")) {
       const baseUrl = credentials?.providerSpecificData?.baseUrl || "";
